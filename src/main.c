@@ -5,16 +5,16 @@
 #include "driver/uart.h"
 #include "driver/gpio.h"
 
-// Definición de pines y parámetros[cite: 8, 9]
+// Definición de pines y parámetros
 #define UART_NUM UART_NUM_2
 #define TXD_PIN 17
 #define RXD_PIN 16
 #define LED_PIN 2 // Pin del LED integrado
 #define BUF_SIZE 1024
 
-int cmd_count = 0; // Contador de comandos[cite: 8]
+int cmd_count = 0; // Contador de comandos
 
-// Función para configurar el UART2[cite: 8]
+// Función para configurar el UART2
 void init_uart(void) {
     const uart_config_t uart_config = {
         .baud_rate = 115200,
@@ -26,20 +26,20 @@ void init_uart(void) {
     
     // Configuramos los parámetros del UART2
     uart_param_config(UART_NUM, &uart_config);
-    // Asignamos los pines 16 y 17[cite: 9]
+    // Asignamos los pines 16 y 17
     uart_set_pin(UART_NUM, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
     // Instalamos el driver (buffers de recepción y transmisión)
     uart_driver_install(UART_NUM, BUF_SIZE * 2, 0, 0, NULL, 0);
 }
 
-// Función para configurar el LED[cite: 8]
+// Función para configurar el LED
 void init_led(void) {
     gpio_reset_pin(LED_PIN);
     gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
     gpio_set_level(LED_PIN, 0); // Apagado por defecto
 }
 
-// Tarea principal para procesar comandos de forma no bloqueante[cite: 8]
+// Tarea principal para procesar comandos de forma no bloqueante
 void uart_task(void *arg) {
     uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
     
@@ -55,7 +55,7 @@ void uart_task(void *arg) {
             char* cmd = (char*)data;
             cmd[strcspn(cmd, "\r\n")] = 0; 
             
-            // Evaluamos los comandos[cite: 8]
+            // Evaluamos los comandos
             if (strcmp(cmd, "status") == 0) {
                 const char* resp = "Estado: Sistema Operando Correctamente\r\n";
                 uart_write_bytes(UART_NUM, resp, strlen(resp));
